@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Date Proposal 💌</title>
+  <style>
+    :root {
+      --bg: #fff6fb;
+      --card: #ffffff;
+      --ink: #2a2235;
+      --accent: #ff4d6d;
+      --accent-2: #7b2cbf;
+      --muted: #6b6475;
+      --ring: rgba(255,77,109,0.35);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #ffe3ed 0%, transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, #e6ddff 0%, transparent 60%),
+        var(--bg);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: 640px;
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(43, 12, 56, 0.14);
+      padding: 24px;
+      border: 1px solid #f1e8f3;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+    .emoji {
+      font-size: 28px;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.06));
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      line-height: 1.2;
+      letter-spacing: 0.2px;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 0.98rem;
+      margin: 0 0 18px;
+    }
+    .bubble {
+      background: #fff1f5;
+      border: 1px solid #ffd6e0;
+      color: #5b3640;
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin: 8px 0 16px;
+      font-size: 0.98rem;
+    }
+    .row { display: flex; gap: 10px; }
+    .row .grow { flex: 1 1 auto; }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #e6d8ea;
+      outline: none;
+      font-size: 1rem;
+      transition: box-shadow .2s, border-color .2s;
+    }
+    input[type="text"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 6px var(--ring);
+    }
+    button {
+      appearance: none;
+      cursor: pointer;
+      border: 0;
+      padding: 12px 16px;
+      font-size: 1rem;
+      border-radius: 12px;
+      transition: transform .02s ease, box-shadow .2s ease, opacity .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #ff79a3);
+      color: white;
+      box-shadow: 0 8px 18px rgba(255,77,109,0.35);
+    }
+    .btn-outline {
+      background: white;
+      color: var(--accent-2);
+      border: 1.5px solid #d8c9ff;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+    }
+    button:active { transform: translateY(1px); }
+    .footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .hidden { display: none !important; }
+    .center { text-align: center; }
+    .heart {
+      display: inline-block;
+      animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      background: #1f2937;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s, transform .2s;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-6px);
+    }
+  </style>
+</head>
+<body>
+  <div class="card" role="dialog" aria-labelledby="title" aria-describedby="subtitle">
+    <div class="header">
+      <div class="emoji">💌</div>
+      <div>
+        <h1 id="title">Hey you… I’ve been meaning to ask</h1>
+        <p class="sub" id="subtitle">Would you like to go on a date with me?</p>
+      </div>
+    </div>
+
+    <div id="step-ask" class="step">
+      <div class="bubble">Please answer with <strong>yes</strong> or <strong>no</strong>.</div>
+      <div class="row">
+        <button class="btn-primary" id="btn-yes">Yes <span class="heart">💖</span></button>
+        <button class="btn-outline" id="btn-no">No 😅</button>
+        <button class="btn-ghost" id="btn-maybe">Maybe? 🤔</button>
+      </div>
+    </div>
+
+    <div id="step-kind" class="step hidden">
+      <div class="bubble">You just made my day! What kind of date are you dreaming about?</div>
+      <div class="row" style="margin-bottom:10px">
+        <input id="idea" type="text" placeholder="dinner, movie, coffee, walk under the stars…" aria-label="Your date idea" />
+      </div>
+      <div class="row">
+        <button class="btn-primary" id="btn-plan">Plan it ✨</button>
+        <button class="btn-ghost" id="btn-back-1">Back</button>
+      </div>
+    </div>
+
+    <div id="step-decline" class="step hidden">
+      <div class="bubble">Aww, that’s okay. I’ll be here listening to love songs until you change your mind.</div>
+      <div class="row">
+        <button class="btn-outline" id="btn-retry">Try again 💬</button>
+      </div>
+    </div>
+
+    <div id="step-confirm" class="step hidden center">
+      <div class="emoji" style="font-size:48px; margin: 6px 0 8px">✨</div>
+      <h2 style="margin:0 0 6px">Perfect! <span id="picked"></span> sounds amazing — I can’t wait!</h2>
+      <p class="sub" style="margin:0">Text me your availability? I’ll plan the cutest adventure.</p>
+      <div class="row" style="justify-content:center; margin-top:12px">
+        <button class="btn-outline" id="btn-startover">Start over</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>Made with ❤️ just for you.</span>
+      <span id="copy-link" style="cursor:pointer; text-decoration:underline">Copy page link</span>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Link copied!</div>
+
+  <script>
+    const $ = (sel) => document.querySelector(sel);
+    const stepAsk = $("#step-ask");
+    const stepKind = $("#step-kind");
+    const stepDecline = $("#step-decline");
+    const stepConfirm = $("#step-confirm");
+    const picked = $("#picked");
+    const idea = $("#idea");
+    const toast = $("#toast");
+
+    function showStep(id) {
+      [stepAsk, stepKind, stepDecline, stepConfirm].forEach(el => el.classList.add("hidden"));
+      id.classList.remove("hidden");
+      if (id === stepKind) idea.focus();
+    }
+
+    $("#btn-yes").addEventListener("click", () => showStep(stepKind));
+    $("#btn-no").addEventListener("click", () => showStep(stepDecline));
+    $("#btn-maybe").addEventListener("click", () => {
+      // Treat "maybe" as invalid; playful retry
+      notify("Hmm… that sounds like a soft yes. Try pressing the pink button. 😉");
+    });
+
+    $("#btn-back-1").addEventListener("click", () => showStep(stepAsk));
+    $("#btn-retry").addEventListener("click", () => showStep(stepAsk));
+
+    $("#btn-plan").addEventListener("click", () => {
+      const v = idea.value.trim();
+      if (!v) { idea.focus(); notify("Tell me a date idea first ✨"); return; }
+      picked.textContent = v;
+      showStep(stepConfirm);
+    });
+
+    $("#btn-startover").addEventListener("click", () => {
+      idea.value = "";
+      showStep(stepAsk);
+    });
+
+    $("#copy-link").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(location.href);
+        notify("Link copied!");
+      } catch (e) {
+        notify("Could not copy link. Long-press the address bar instead.");
+      }
+    });
+
+    function notify(msg) {
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 1400);
+    }
+  </script>
+</body>
+</html>
